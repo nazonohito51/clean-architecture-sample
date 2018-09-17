@@ -31,7 +31,7 @@ class GetUserInteractor
         return new GetUserResponse(new User(
             Identifier::of($user['id']),
             UserName::of($user['name']),
-            MailAddress::of($user['mail']),
+            MailAddress::of($user['email']),
             UserPassword::of($user['password']))
         );
     }
