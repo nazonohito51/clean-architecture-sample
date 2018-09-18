@@ -6,7 +6,9 @@ namespace App\Http\Controllers\Api;
 use Acme\Application\Repositories\UserRepository;
 use Acme\Application\UseCases\GetUserInteractor;
 use App\Http\Controllers\Controller;
+use App\Presenters\HttpPresenter;
 use App\UseCaseRequests\GetUserRequest;
+use App\ViewModels\ViewModel;
 use Illuminate\Database\Connection;
 
 class UserController extends Controller
@@ -17,10 +19,11 @@ class UserController extends Controller
 
         $response = $useCase->handle(new GetUserRequest((int)$id));
 
-        return response()->json([
+        $viewModel = new ViewModel([
             'id' => $response->getUserId(),
             'name' => $response->getUserName(),
             'email' => $response->getMailAddress()
         ]);
+        return (new HttpPresenter)->json($viewModel);
     }
 }
