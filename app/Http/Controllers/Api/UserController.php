@@ -11,7 +11,7 @@ use App\ViewModels\ViewModel;
 
 class UserController extends Controller
 {
-    public function show(GetUserInteractor $useCase, $id)
+    public function show(GetUserInteractor $useCase, HttpPresenter $presenter, $id)
     {
         $response = $useCase->handle(new GetUserRequest((int)$id));
 
@@ -20,6 +20,6 @@ class UserController extends Controller
             'name' => $response->getUserName(),
             'email' => $response->getMailAddress()
         ]);
-        return (new HttpPresenter)->json($viewModel);
+        return $presenter->json($viewModel);
     }
 }
