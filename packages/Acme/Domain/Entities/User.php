@@ -27,7 +27,7 @@ class User
      */
     private $password;
 
-    public function __construct(Identifier $id, UserName $name, MailAddress $mail, UserPassword $password)
+    public function __construct(Identifier $id = null, UserName $name, MailAddress $mail, UserPassword $password)
     {
         $this->id = $id;
         $this->name = $name;
