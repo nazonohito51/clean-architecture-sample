@@ -5,7 +5,7 @@ namespace Acme\Application\Responses;
 
 use Acme\Domain\Entities\User;
 
-class GetUserResponse
+class GetUserResponse implements GetUserResponseInterface
 {
     /**
      * @var User

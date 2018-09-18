@@ -5,6 +5,7 @@ namespace Acme\Application\UseCases;
 
 use Acme\Application\Requests\GetUserRequestInterface;
 use Acme\Application\Responses\GetUserResponse;
+use Acme\Application\Responses\GetUserResponseInterface;
 use Acme\Domain\Entities\User;
 use Acme\Domain\ValueObjects\Identifier;
 use Acme\Domain\ValueObjects\MailAddress;
@@ -24,7 +25,7 @@ class GetUserInteractor
         $this->repository = $repository;
     }
 
-    public function handle(GetUserRequestInterface $request): GetUserResponse
+    public function handle(GetUserRequestInterface $request): GetUserResponseInterface
     {
         $user = $this->repository->find($request->getIdentifier());
 
