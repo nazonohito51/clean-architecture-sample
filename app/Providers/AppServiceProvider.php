@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use Acme\Application\Repositories\UserRepository;
+use Acme\Application\Repositories\UserRepositoryInterface;
+use Illuminate\Database\Connection;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(UserRepositoryInterface::class, function ($app) {
+            return new UserRepository($app->make(Connection::class));
+        });
     }
 }
