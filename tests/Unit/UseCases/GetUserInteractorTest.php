@@ -12,7 +12,7 @@ use Tests\TestCase;
 
 class GetUserInteractorTest extends TestCase
 {
-    public function testGetUser()
+    public function testHandle()
     {
         $useCase = new GetUserInteractor(new class ($this->app->get(Connection::class)) extends UserRepository {
             public function find(int $id)
@@ -20,7 +20,7 @@ class GetUserInteractorTest extends TestCase
                 return [
                     'id' => $id,
                     'name' => 'name',
-                    'mail' => 'hoge@example.com',
+                    'email' => 'hoge@example.com',
                     'password' => 'password',
                 ];
             }
