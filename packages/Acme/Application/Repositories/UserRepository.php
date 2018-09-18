@@ -5,7 +5,7 @@ namespace Acme\Application\Repositories;
 
 use Illuminate\Database\Connection;
 
-class UserRepository
+class UserRepository implements UserRepositoryInterface
 {
     /**
      * @var Connection
