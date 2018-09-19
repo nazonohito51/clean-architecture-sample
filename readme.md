@@ -1,4 +1,4 @@
-# Clean Architecture Sample
+# Sample of Clean Architecture
 Implementation of Clean Architecture by Laravel.
 
 Original blog post: [https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html)
