@@ -1,41 +1,30 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Unit\UseCases;
+namespace Tests\Unit\Acme\Application\UseCases;
 
+use Acme\Application\DataAccess\Database\GatewayInterface;
 use Acme\Application\Requests\CreateUserRequestInterface;
-use Acme\Application\Requests\GetUserRequestInterface;
 use Acme\Application\Responses\CreateUserResponse;
-use Acme\Application\Responses\GetUserResponse;
 use Acme\Application\UseCases\CreateUserInteractor;
-use Acme\Application\UseCases\GetUserInteractor;
-use Acme\Application\Repositories\UserRepositoryInterface;
-use Acme\Domain\Entities\User;
-use Illuminate\Database\Connection;
 use Tests\TestCase;
 
 class CreateUserInteractorTest extends TestCase
 {
     public function testHandle()
     {
-        $useCase = new CreateUserInteractor(new class ($this->app->get(Connection::class)) implements UserRepositoryInterface {
-            public function find(int $id): ?array
+        $gateway = new class implements GatewayInterface {
+            public function select(string $query, array $bindings = []): array
             {
-                return [
-                    'id' => $id,
-                    'name' => 'name',
-                    'mail' => 'hoge@example.com',
-                    'password' => 'password',
-                ];
+                throw new \RuntimeException();
             }
 
-            public function save(User $user): bool
+            public function insert(string $query, array $bindings): bool
             {
                 return true;
             }
-        });
-
-        $response = $useCase->handle(new class implements CreateUserRequestInterface {
+        };
+        $request = new class implements CreateUserRequestInterface {
             public function getUserName(): string
             {
                 return 'name';
@@ -50,7 +39,10 @@ class CreateUserInteractorTest extends TestCase
             {
                 return 'password';
             }
-        });
+        };
+        $useCase = new CreateUserInteractor($gateway);
+
+        $response = $useCase->handle($request);
 
         $this->assertInstanceOf(CreateUserResponse::class, $response);
         $this->assertEquals('name', $response->getUserName());

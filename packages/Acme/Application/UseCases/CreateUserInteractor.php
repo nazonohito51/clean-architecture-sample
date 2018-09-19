@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Acme\Application\UseCases;
 
+use Acme\Application\DataAccess\Database\GatewayInterface;
 use Acme\Application\Exceptions\SaveEntityException;
-use Acme\Application\Repositories\UserRepositoryInterface;
+use Acme\Application\Repositories\UserRepository;
+use Acme\Domain\Repositories\UserRepositoryInterface;
 use Acme\Application\Requests\CreateUserRequestInterface;
 use Acme\Application\Requests\GetUserRequestInterface;
 use Acme\Application\Responses\CreateUserResponse;
@@ -19,24 +21,25 @@ use Acme\Domain\ValueObjects\UserPassword;
 class CreateUserInteractor
 {
     /**
-     * @var UserRepositoryInterface
+     * @var GatewayInterface
      */
-    private $repository;
+    private $gateway;
 
-    public function __construct(UserRepositoryInterface $repository)
+    public function __construct(GatewayInterface $gateway)
     {
-        $this->repository = $repository;
+        $this->gateway = $gateway;
     }
 
     public function handle(CreateUserRequestInterface $request): GetUserResponseInterface
     {
+        $repository = new UserRepository($this->gateway);
         $entity = new User(
             null,
             UserName::of($request->getUserName()),
             MailAddress::of($request->getMailAddress()),
             UserPassword::of($request->getPassword())
         );
-        if (!$this->repository->save($entity)) {
+        if (!$repository->save($entity)) {
             throw new SaveEntityException();
         }
 

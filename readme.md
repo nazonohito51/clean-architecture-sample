@@ -1,32 +1,32 @@
-# CleanArchitecture サンプル
-Laravelによるの CleanArchitecture 実装のサンプル。
+# Sample of Clean Architecture
+Implementation of Clean Architecture by Laravel.
+
+Original blog post: [https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html](https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html)
+
+![cleanarchitecture-8d1fe066e8f7fa9c7d8e84c1a6b0e2b74b2c670ff8052828f4a7e73fcbbc698c](https://user-images.githubusercontent.com/7877772/45727888-97f15e80-bc00-11e8-888a-24c190959a8d.jpg)
 
 ## Layers
-### Enterprise Business Rules
-* 企業全体の最重要ビジネスルールをカプセル化したもの
-* 企業にあるさまざまなアプリケーションから使用できるなら、エンティティは何であっても問題はない。
+### Entities
+* Entities encapsulate Enterprise wide business rules.
+* It doesn’t matter so long as the entities could be used by many different applications in the enterprise.
 
-### Application Business Rules
-* アプリケーション固有のビジネスルール
-* エンティティのデータの流れを調整し、ユースケースの目的が達成できるように、エンティティに最重要ビジネスルールを使用するように指示を出す
-* Controllerは、プレインオールドなJavaオブジェクトにデータを詰め込み、InputBoundaryを経由して、UseCaseInteractorに渡す
-* Presenterの仕事は、OutputDataをViewModel（プレインオールドなJavaオブジェクト）に詰め込み直し、表示可能な形式にすること
-  * Viewがやるべきことは、ViewModelからHTMLページにデータを移動すること以外に残されていない
+### Use Cases
+* The software in this layer contains application specific business rules.
+* These use cases orchestrate the flow of data to and from the entities, and direct those entities to use their enterprise wide business rules to achieve the goals of the use case.
 
 ### Interface Adapters
-* ユースケースやエンティティに便利なフォーマットから、データベースやウェブなどの外部エージェントに便利なフォーマットにデータを変換するアダプター
-* GUIのMVCアーキテクチャを保持するのはこのレイヤー
-  * モデルは、コントローラーからユースケースに渡され、ユースケースからプレゼンターとビューに戻されるデータ構造にすぎない
+* The software in this layer is a set of adapters that convert data from the format most convenient for the use cases and entities.
+* That will wholly contain the MVC architecture of a GUI.
+  * The models are likely just data structures that are passed from the controllers to the use cases, and then back from the use cases to the presenters and views.
 
 ### Frameworks & Drivers
-* フレームワークやツールなど
-* このレイヤーのコードはあまり書かない
+* The outermost layer is generally composed of frameworks and tools such as the Database, the Web Framework, etc.
 
-## Require Rules
-* ソースコードの依存性は、内側（上位レベルの方針）だけに向かっていなければならない
-  * 外側で宣言された名前は、内側にあるコードで触れてはならない
-  * 外側から宣言されたデータフォーマットは、内側から使ってはいけない
-* 依存関係は依存性逆転の原則を使って解消する
-* 境界線を超えるデータは、単純なデータ構造で構成されている
-  * 構造体やデータ転送オブジェクトを使うこともできる
-  * 単なる関数呼び出しの引数にすることもできる
+## The Dependency Rule
+* The overriding rule that makes this architecture work is The Dependency Rule. This rule says that source code dependencies can only point inwards.
+  * Nothing in an inner circle can know anything at all about something in an outer circle.
+  * The name of something declared in an outer circle must not be mentioned by the code in an inner circle.
+* We usually resolve this apparent contradiction by using the Dependency Inversion Principle.
+* Typically the data that crosses the boundaries is simple data structures.
+  * You can use basic structs or simple Data Transfer objects if you like.
+  * Or the data can simply be arguments in function calls.

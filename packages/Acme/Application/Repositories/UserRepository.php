@@ -3,31 +3,45 @@ declare(strict_types=1);
 
 namespace Acme\Application\Repositories;
 
+use Acme\Application\DataAccess\Database\GatewayInterface;
 use Acme\Domain\Entities\User;
-use Illuminate\Database\Connection;
+use Acme\Domain\Repositories\UserRepositoryInterface;
+use Acme\Domain\ValueObjects\Identifier;
+use Acme\Domain\ValueObjects\MailAddress;
+use Acme\Domain\ValueObjects\UserName;
+use Acme\Domain\ValueObjects\UserPassword;
 
 class UserRepository implements UserRepositoryInterface
 {
     /**
-     * @var Connection
+     * @var GatewayInterface
      */
-    private $connection;
+    private $gateway;
 
-    public function __construct(Connection $db)
+    public function __construct(GatewayInterface $gateway)
     {
-        $this->connection = $db;
+        $this->gateway = $gateway;
     }
 
-    public function find(int $id): ?array
+    public function find(int $id): ?User
     {
-        $user = $this->connection->selectOne('SELECT * FROM users WHERE id = ?', [$id]);
+        $users = $this->gateway->select('SELECT * FROM users WHERE id = ?', [$id]);
 
-        return $user ? (array)$user : null;
+        if (isset($users[0])) {
+            return new User(
+                Identifier::of($users[0]['id']),
+                UserName::of($users[0]['name']),
+                MailAddress::of($users[0]['email']),
+                UserPassword::of($users[0]['password'])
+            );
+        } else {
+            return null;
+        }
     }
 
     public function save(User $user): bool
     {
-        return $this->connection->insert('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [
+        return $this->gateway->insert('INSERT INTO users (name, email, password) VALUES (?, ?, ?)', [
             $user->getName(),
             $user->getMail(),
             $user->getPassword()

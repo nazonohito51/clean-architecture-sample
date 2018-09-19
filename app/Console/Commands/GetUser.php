@@ -33,7 +33,7 @@ class GetUser extends Command
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param GetUserInteractor $useCase
      */
     public function __construct(GetUserInteractor $useCase)
     {
