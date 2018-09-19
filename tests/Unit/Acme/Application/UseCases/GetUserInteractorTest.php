@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\Unit\UseCases;
+namespace Tests\Unit\Acme\Application\UseCases;
 
 use Acme\Application\Repositories\UserRepositoryInterface;
 use Acme\Application\Requests\GetUserRequestInterface;
