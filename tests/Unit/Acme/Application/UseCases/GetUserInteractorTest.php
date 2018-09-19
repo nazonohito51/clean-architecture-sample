@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Acme\Application\UseCases;
 
-use Acme\Application\Repositories\UserRepositoryInterface;
+use Acme\Application\DataAccess\Database\GatewayInterface;
+use Acme\Domain\Repositories\UserRepositoryInterface;
 use Acme\Application\Requests\GetUserRequestInterface;
 use Acme\Application\Responses\GetUserResponse;
 use Acme\Application\Responses\GetUserResponseInterface;
@@ -16,18 +17,20 @@ class GetUserInteractorTest extends TestCase
 {
     public function testHandle()
     {
-        $useCase = new GetUserInteractor(new class ($this->app->get(Connection::class)) implements UserRepositoryInterface {
-            public function find(int $id): ?array
+        $useCase = new GetUserInteractor(new class implements GatewayInterface {
+            public function select(string $query, array $bindings = []): array
             {
                 return [
-                    'id' => $id,
-                    'name' => 'name',
-                    'email' => 'hoge@example.com',
-                    'password' => 'password',
+                    [
+                        'id' => 1,
+                        'name' => 'name',
+                        'email' => 'hoge@example.com',
+                        'password' => 'password',
+                    ]
                 ];
             }
 
-            public function save(User $user): bool
+            public function insert(string $query, array $bindings): bool
             {
                 throw new \RuntimeException();
             }

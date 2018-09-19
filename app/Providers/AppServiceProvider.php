@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Acme\Application\DataAccess\Database\GatewayInterface;
 use Acme\Application\Repositories\UserRepository;
-use Acme\Application\Repositories\UserRepositoryInterface;
+use Acme\Domain\Repositories\UserRepositoryInterface;
+use App\DataAccess\Database\Gateway;
 use Illuminate\Database\Connection;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,8 +28,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bind(GatewayInterface::class, function ($app) {
+            return new Gateway($app->make(Connection::class));
+        });
+
         $this->app->bind(UserRepositoryInterface::class, function ($app) {
-            return new UserRepository($app->make(Connection::class));
+            return new UserRepository($app->make(GatewayInterface::class));
         });
     }
 }
