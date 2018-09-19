@@ -11,6 +11,8 @@
 |
 */
 
+Route::get('/user/{id}', 'UserController@show');
+
 Route::get('/', function () {
     return view('welcome');
 });

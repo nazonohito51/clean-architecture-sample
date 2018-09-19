@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Presenters;
+namespace App\Presenters\Http;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\JsonResponse;
 
-class HttpPresenter
+class JsonPresenter
 {
-    public function json(Arrayable $viewModel): JsonResponse
+    public function view(Arrayable $viewModel): JsonResponse
     {
         return response()->json($viewModel->toArray());
     }
